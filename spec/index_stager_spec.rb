@@ -23,10 +23,10 @@ describe Elasticsearch::IndexStager do
   it "promotes a staged index to live" do
     stager = stage_index
     stager.promote
-    ESHelper.client.refresh_index!
+    ESHelper.refresh(stager.index_name)
 
-    response = ESHelper.client.search(index: 'articles', body: { query: { title: 'test' } } )
-    expect(response.results.size).to eq 2
+    response = ESHelper.client.search(index: stager.index_name, body: { query: { match: { title: 'test' } } } )
+    expect(response['hits']['total']).to eq 2
 
     aliases = ESHelper.client.indices.get_aliases(index: stager.index_name) 
     expect(aliases.keys[0]).to eq stager.tmp_index_name
@@ -36,7 +36,7 @@ describe Elasticsearch::IndexStager do
     create_index('articles')
     stager = stage_index
     stager.promote
-    ESHelper.client.refresh_index!
+    ESHelper.refresh(stager.index_name)
 
     aliases = ESHelper.client.indices.get_aliases(index: stager.index_name)
     expect(aliases.keys[0]).to eq stager.tmp_index_name

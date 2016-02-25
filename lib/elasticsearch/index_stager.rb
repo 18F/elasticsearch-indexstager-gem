@@ -1,5 +1,7 @@
 module Elasticsearch
   class IndexStager
+    VERSION = '1.0.0'
+
     attr_reader :index_name, :es_client
 
     def initialize(opts)

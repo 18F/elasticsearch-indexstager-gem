@@ -1,7 +1,7 @@
 require 'elasticsearch'
-require 'es_helper'
-
 require 'elasticsearch/index_stager'
+
+require 'es_helper'
 
 RSpec.configure do |config|
   #config.profile_examples = 10

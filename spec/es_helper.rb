@@ -24,4 +24,8 @@ class ESHelper
   def self.client
     @@client
   end
+
+  def self.refresh(index_name)
+    client.indices.refresh index: index_name
+  end
 end
