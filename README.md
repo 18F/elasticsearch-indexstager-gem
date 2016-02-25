@@ -10,6 +10,25 @@ See also:
 
 ## Examples
 
+A busy ES installation needs to stay up and serving requests. If you need to build a new index,
+you can "stage" it alongside the live index, and then "promote" the stage to be live. This allows
+for zero downtime cutovers of new indices.
+
+```ruby
+require 'elasticsearch'
+require 'elasticsearch/index_stager'
+
+client = Elasticsearch::Client.new log: true
+stager = Elasticsearch::IndexStager.new(index_name: 'foo', es_client: client)
+
+client.index(index: stager.tmp_index_name, type: 'article', id: 1, body: { title: 'Test' })
+stager.alias_stage_to_tmp_index
+
+results = client.search(index: stager.stage_index_name, body: { query: { match: { title: 'test' } } })
+stager.promote
+results = client.search(index: stager.index_name, body: { query: { match: { title: 'test' } } })
+```
+
 ## Public domain
 
 This project is in the worldwide [public domain](LICENSE.md). As stated in [CONTRIBUTING](CONTRIBUTING.md):
